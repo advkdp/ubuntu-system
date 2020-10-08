@@ -1,0 +1,39 @@
+METHOD 1: Command-line Way from Terminal (Fastest way!)
+STEP 1: First step is to check if by chance is there any SWAP partition already created in your PC:
+
+sudo swapon --show
+Enter your root password. If you see no output, it means that the SWAP doesn’t exist.
+
+STEP 2: Next, let’s see the current partition structure of your computer’s hard disk:
+
+df -h
+STEP 3: As heynnema commented, before you start the changes disable the use of swap:
+
+sudo swapoff -a
+
+STEP 4: Now it's time to create the SWAP file. Make sure you have enough space on the hard disk. It is a matter of preference in how much SWAP size you need.
+
+My suggestion is: If you have a maximum of 4GB of RAM I would suggest putting twice the RAM for the SWAP (8GB for SWAP). For PCs with more than 4GB I recommend the same number of RAM for SWAP plus 2GB. Example: In my case it's 8GB, I put 8GB + 2GB, totaling 10GB for SWAP. But you may feel free to make your choice.
+
+sudo dd if=/dev/zero of=/swapfile bs=5M count=5120 status=progress
+STEP 5: SWAP file is now created. Let’s give root-only permissions to it.
+
+sudo chmod 600 /swapfile
+STEP 6: Mark the file as SWAP space:
+
+sudo mkswap /swapfile
+STEP 7: Finally enable the SWAP.
+
+sudo swapon /swapfile
+STEP 8: You can now check using the same swapon command to check if SWAP is created.
+
+sudo swapon --show
+STEP 9: Also check the final partition structure again.
+
+free -h
+STEP 10: Once everything is set, you must set the SWAP file as permanent, else you will lose the SWAP after reboot. Run this command:
+
+echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+
+You can check SWAP status on System Monitor utility.
+
